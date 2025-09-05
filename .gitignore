@@ -2,4 +2,6 @@
 !.env.default
 
 directus/database/**
+!directus/database/.gitkeep
 directus/uploads/**
+!directus/uploads/.gitkeep

@@ -1,0 +1,53 @@
+networks:
+  quickdraw-network:
+    driver: bridge
+
+services:
+  caddy:
+    image: caddy:2.10
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./caddy:/etc/caddy
+    networks:
+      - quickdraw-network
+
+  frontend:
+    build: 
+      context: .
+      dockerfile: Dockerfile.frontend
+    image: quickdraw-nuxt-frontend:latest
+    container_name: frontend
+    restart: unless-stopped
+    tty: true
+    env_file:
+      - path: ./.env.default
+        required: false
+      - path: ./.env
+        required: false
+      - path: ./.env.local
+        required: false
+    networks:
+      - quickdraw-network
+
+  directus:
+    image: directus/directus:11.10
+    container_name: directus
+    restart: unless-stopped
+    tty: true
+    env_file:
+      - path: ./.env.default
+        required: false
+      - path: ./.env
+        required: false
+      - path: ./.env.local
+        required: false
+    volumes:
+      - ./directus/database:/directus/database
+      - ./directus/uploads:/directus/uploads
+      - ./directus/extensions:/directus/extensions
+    networks:
+      - quickdraw-network

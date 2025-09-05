@@ -1,0 +1,11 @@
+:80 {
+    
+    handle_path /cms/* {
+        reverse_proxy http://directus:8055
+    }
+
+    handle {
+        reverse_proxy http://frontend:3000
+    }
+
+}
